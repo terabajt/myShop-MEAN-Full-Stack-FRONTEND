@@ -96,34 +96,34 @@ export class ProductsFormComponent implements OnInit {
             this.categories = categories;
         });
     }
-    onImageUpload(event) {
-        const file: File = event.target.files[0];
-        if (file) {
-            this.form.patchValue({ image: file });
-            this.form.get('image').updateValueAndValidity();
-            const fileReader = new FileReader();
-            fileReader.onload = () => {
-                this.imageDisplay = fileReader.result;
-            };
-            fileReader.readAsDataURL(file);
-        }
-    }
-
-    //STRICT MODE VERSION NOT WORKING:
-    // onImageUpload(event: Event & { target: HTMLInputElement }) {
-    //     if (!(event.target instanceof HTMLInputElement)) return;
-    //     const files = event.target.files;
-    //     if (!files?.length) {
-    //         return;
-    //     }
-    //     if (files[0]) {
+    // onImageUpload(event) {
+    //     const file: File = event.target.files[0];
+    //     if (file) {
+    //         this.form.patchValue({ image: file });
+    //         this.form.get('image').updateValueAndValidity();
     //         const fileReader = new FileReader();
     //         fileReader.onload = () => {
     //             this.imageDisplay = fileReader.result;
     //         };
-    //         fileReader.readAsDataURL(files[0]);
+    //         fileReader.readAsDataURL(file);
     //     }
     // }
+
+    //STRICT MODE VERSION NOT WORKING:
+    onImageUpload(event: Event) {
+        if (!(event.target instanceof HTMLInputElement)) return;
+        const files = event.target.files;
+        if (!files?.length) {
+            return;
+        }
+        if (files[0]) {
+            const fileReader = new FileReader();
+            fileReader.onload = () => {
+                this.imageDisplay = fileReader.result;
+            };
+            fileReader.readAsDataURL(files[0]);
+        }
+    }
     private _addProduct(productData: FormData) {
         this.productsService.createProduct(productData).subscribe(
             (product: Product) => {

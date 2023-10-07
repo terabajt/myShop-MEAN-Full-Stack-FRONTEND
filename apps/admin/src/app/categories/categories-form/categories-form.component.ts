@@ -34,7 +34,7 @@ export class CategoriesFormComponent implements OnInit {
 
         this._checkEditMode();
     }
-
+    onCancel() {}
     onSubmit() {
         this.isSubmitted = true;
 

@@ -9,7 +9,8 @@
             <p-button (click)="onSubmit()" styleClass="p-button-primary mr-2" [label]="editmode ? 'Update' : 'Create'"
               icon="pi pi-plus" [disabled]="!(categoryForm.name.valid && categoryForm.icon.valid)">
             </p-button>
-            <p-button styleClass="p-button-secondary" label="Cancel" icon="pi pi-arrow-circle-left">
+            <p-button styleClass="p-button-secondary" label="Cancel" icon="pi pi-arrow-circle-left"
+              (click)="onCancel()">
             </p-button>
           </div>
         </p-toolbar>

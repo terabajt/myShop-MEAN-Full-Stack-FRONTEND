@@ -29,6 +29,10 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { DropdownModule } from 'primeng/dropdown';
 import { EditorModule } from 'primeng/editor';
+import { TagModule } from 'primeng/tag';
+import { UsersListComponent } from './pages/users/users-list/users-list.component';
+import { UsersFormComponent } from './pages/users/users-form/users-form.component';
+import { InputMaskModule } from 'primeng/inputmask';
 
 const UX_MODULE = [
     ColorPickerModule,
@@ -43,7 +47,9 @@ const UX_MODULE = [
     InputTextareaModule,
     InputSwitchModule,
     DropdownModule,
-    EditorModule
+    EditorModule,
+    TagModule,
+    InputMaskModule
 ];
 
 @NgModule({
@@ -55,7 +61,9 @@ const UX_MODULE = [
         CategoriesListComponent,
         CategoriesFormComponent,
         ProductsListComponent,
-        ProductsFormComponent
+        ProductsFormComponent,
+        UsersListComponent,
+        UsersFormComponent
     ],
     imports: [
         BrowserModule,
