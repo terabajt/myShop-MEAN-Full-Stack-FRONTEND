@@ -1,6 +1,6 @@
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -36,6 +36,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { OrdersListComponent } from './pages/orders/orders-list/orders-list.component';
 import { OrdersDetailComponent } from './pages/orders/orders-detail/orders-detail.component';
 import { FieldsetModule } from 'primeng/fieldset';
+import { JwtInterceptor, UsersModule } from '@webappshop/users';
 
 const UX_MODULE = [
     ColorPickerModule,
@@ -73,6 +74,7 @@ const UX_MODULE = [
     ],
     imports: [
         BrowserModule,
+        UsersModule,
         BrowserAnimationsModule,
         FormsModule,
         ReactiveFormsModule,
@@ -80,7 +82,7 @@ const UX_MODULE = [
         RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
         ...UX_MODULE
     ],
-    providers: [MessageService, ConfirmationService],
+    providers: [MessageService, ConfirmationService, { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }],
     bootstrap: [AppComponent]
 })
 export class AppModule {}
