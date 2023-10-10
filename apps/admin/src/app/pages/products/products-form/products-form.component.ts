@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { CategoriesService, Category, Product, ProductsService } from '@webappshop/products';
-import { timer } from 'rxjs';
+import { Subject, takeUntil, timer } from 'rxjs';
 
 @Component({
     selector: 'admin-products-form',
     templateUrl: './products-form.component.html',
     styles: []
 })
-export class ProductsFormComponent implements OnInit {
+export class ProductsFormComponent implements OnInit, OnDestroy {
+    endsubs$: Subject<any> = new Subject();
     editmode = false;
     categories = <Category[]>[];
     form!: FormGroup;
@@ -48,19 +49,22 @@ export class ProductsFormComponent implements OnInit {
         });
     }
     private _updateProduct(productFormData: FormData) {
-        this.productsService.updateProduct(productFormData, this.currentProductId).subscribe(
-            (product: Product) => {
-                this.messageService.add({ severity: 'success', summary: 'Success', detail: `Product ${product.name} is updated ` });
-                timer(2000)
-                    .toPromise()
-                    .then(() => {
-                        this.location.back();
-                    });
-            },
-            () => {
-                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Product is not updated' });
-            }
-        );
+        this.productsService
+            .updateProduct(productFormData, this.currentProductId)
+            .pipe(takeUntil(this.endsubs$))
+            .subscribe(
+                (product: Product) => {
+                    this.messageService.add({ severity: 'success', summary: 'Success', detail: `Product ${product.name} is updated ` });
+                    timer(2000)
+                        .toPromise()
+                        .then(() => {
+                            this.location.back();
+                        });
+                },
+                () => {
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Product is not updated' });
+                }
+            );
     }
     get productForm() {
         return this.form.controls;
@@ -92,24 +96,13 @@ export class ProductsFormComponent implements OnInit {
         }
     }
     private _getCategories() {
-        this.categoriesService.getCategories().subscribe((categories) => {
-            this.categories = categories;
-        });
+        this.categoriesService
+            .getCategories()
+            .pipe(takeUntil(this.endsubs$))
+            .subscribe((categories) => {
+                this.categories = categories;
+            });
     }
-    // onImageUpload(event) {
-    //     const file: File = event.target.files[0];
-    //     if (file) {
-    //         this.form.patchValue({ image: file });
-    //         this.form.get('image').updateValueAndValidity();
-    //         const fileReader = new FileReader();
-    //         fileReader.onload = () => {
-    //             this.imageDisplay = fileReader.result;
-    //         };
-    //         fileReader.readAsDataURL(file);
-    //     }
-    // }
-
-    //STRICT MODE VERSION NOT WORKING:
     onImageUpload(event: Event) {
         if (!(event.target instanceof HTMLInputElement)) return;
         const files = event.target.files;
@@ -125,22 +118,25 @@ export class ProductsFormComponent implements OnInit {
         }
     }
     private _addProduct(productData: FormData) {
-        this.productsService.createProduct(productData).subscribe(
-            (product: Product) => {
-                this.messageService.add({ severity: 'success', summary: 'Success', detail: `Product ${product.name} is created` });
-                timer(2000)
-                    .toPromise()
-                    .then(() => {
-                        this.location.back();
-                    });
-            },
-            () => {
-                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Product is not created' });
-            }
-        );
+        this.productsService
+            .createProduct(productData)
+            .pipe(takeUntil(this.endsubs$))
+            .subscribe(
+                (product: Product) => {
+                    this.messageService.add({ severity: 'success', summary: 'Success', detail: `Product ${product.name} is created` });
+                    timer(2000)
+                        .toPromise()
+                        .then(() => {
+                            this.location.back();
+                        });
+                },
+                () => {
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Product is not created' });
+                }
+            );
     }
     private _checkEditMode() {
-        this.route.params.subscribe((params) => {
+        this.route.params.pipe(takeUntil(this.endsubs$)).subscribe((params) => {
             if (params.id) {
                 this.editmode = true;
                 this.currentProductId = params.id;
@@ -160,5 +156,8 @@ export class ProductsFormComponent implements OnInit {
                 });
             }
         });
+    }
+    ngOnDestroy(): void {
+        this.endsubs$.complete();
     }
 }

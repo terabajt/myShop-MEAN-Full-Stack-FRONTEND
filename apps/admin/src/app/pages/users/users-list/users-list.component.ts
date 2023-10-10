@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UsersService, User } from '@webappshop/users';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'admin-users-list',
     templateUrl: './users-list.component.html'
 })
-export class UsersListComponent implements OnInit {
+export class UsersListComponent implements OnInit, OnDestroy {
+    endsubs$: Subject<any> = new Subject();
     users: User[] = [];
 
     constructor(
@@ -22,9 +24,12 @@ export class UsersListComponent implements OnInit {
     }
 
     private _getUsers() {
-        this.usersService.getUsers().subscribe((users) => {
-            this.users = users;
-        });
+        this.usersService
+            .getUsers()
+            .pipe(takeUntil(this.endsubs$))
+            .subscribe((users) => {
+                this.users = users;
+            });
     }
 
     _getCountry(code: string) {
@@ -37,20 +42,26 @@ export class UsersListComponent implements OnInit {
             header: 'Delete User',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.usersService.deleteUser(userId).subscribe(
-                    () => {
-                        this._getUsers();
-                        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'User is deleted' });
-                    },
-                    () => {
-                        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'User is not deleted' });
-                    }
-                );
+                this.usersService
+                    .deleteUser(userId)
+                    .pipe(takeUntil(this.endsubs$))
+                    .subscribe(
+                        () => {
+                            this._getUsers();
+                            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'User is deleted' });
+                        },
+                        () => {
+                            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'User is not deleted' });
+                        }
+                    );
             }
         });
     }
 
     onUpdateUser(userId: string) {
         this.router.navigateByUrl(`users/form/${userId}`);
+    }
+    ngOnDestroy(): void {
+        this.endsubs$.complete();
     }
 }

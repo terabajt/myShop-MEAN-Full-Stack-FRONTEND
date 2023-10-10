@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Order, OrdersService } from '@webappshop/orders';
 import { ORDER_STATUS } from '../order.constants';
 import { MessageService } from 'primeng/api';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
     selector: 'admin-orders-detail',
     templateUrl: './orders-detail.component.html',
     styles: []
 })
-export class OrdersDetailComponent implements OnInit {
+export class OrdersDetailComponent implements OnInit, OnDestroy {
+    endsubs$: Subject<any> = new Subject();
     order: Order;
     orderStatuses = [];
     selectedStatus;
@@ -28,7 +30,7 @@ export class OrdersDetailComponent implements OnInit {
         });
     }
     private _getOrder() {
-        this.route.params.subscribe((params) => {
+        this.route.params.pipe(takeUntil(this.endsubs$)).subscribe((params) => {
             if (params.id) {
                 this.ordersService.getOrder(params.id).subscribe((order) => {
                     this.order = order;
@@ -38,13 +40,19 @@ export class OrdersDetailComponent implements OnInit {
         });
     }
     onStatusChange(event) {
-        this.ordersService.updateOrder({ status: event.value }, this.order.id).subscribe(
-            () => {
-                this.messageService.add({ severity: 'success', summary: 'Success', detail: `Status of order is updated ` });
-            },
-            () => {
-                this.messageService.add({ severity: 'error', summary: 'Error', detail: `Status of order is not updated ` });
-            }
-        );
+        this.ordersService
+            .updateOrder({ status: event.value }, this.order.id)
+            .pipe(takeUntil(this.endsubs$))
+            .subscribe(
+                () => {
+                    this.messageService.add({ severity: 'success', summary: 'Success', detail: `Status of order is updated ` });
+                },
+                () => {
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail: `Status of order is not updated ` });
+                }
+            );
+    }
+    ngOnDestroy(): void {
+        this.endsubs$.complete();
     }
 }

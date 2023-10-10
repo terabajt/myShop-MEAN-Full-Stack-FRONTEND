@@ -1,6 +1,6 @@
 <div class="admin-page">
   <p-card header="Dashboard" subheader="Latest Updates">
-    <div class="grid">
+    <div class="grid" *ngIf="statistics.length">
       <div class="col-3">
         <p-card styleClass="d-orders">
           <div class="d-item">
