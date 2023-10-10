@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Order } from '../models/order';
-import { Observable } from 'rxjs';
-// import { environment } from '@env/environment';
+import { Observable, map } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class OrdersService {
-    // apiURLOrders = environment.apiURL + 'orders';
+    apiURLOrders = environment.apiURL + 'orders';
     constructor(private http: HttpClient) {}
 
     getOrders(): Observable<Order[]> {
@@ -25,5 +25,11 @@ export class OrdersService {
     }
     updateOrder(orderStatus: { status: string }, orderId: string) {
         return this.http.put<Order>(`http://localhost:3000/api/v1/orders/${orderId}`, orderStatus);
+    }
+    getOrderCount(): Observable<number> {
+        return this.http.get<number>(`${this.apiURLOrders}/get/count`).pipe(map((res: any) => res.orderCount));
+    }
+    getTotalSales(): Observable<number> {
+        return this.http.get<number>(`${this.apiURLOrders}/get/totalsales`).pipe(map((res: any) => res.totalsales));
     }
 }

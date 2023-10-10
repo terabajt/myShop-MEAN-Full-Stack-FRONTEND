@@ -1,14 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import * as countriesLib from 'i18n-iso-countries';
 declare const require: (arg0: string) => countriesLib.LocaleData;
+import { environment } from '../../../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UsersService {
+    apiURLUsers = environment.apiURL + 'users';
     constructor(private http: HttpClient) {
         countriesLib.registerLocale(require('i18n-iso-countries/langs/en.json'));
     }
@@ -40,5 +42,9 @@ export class UsersService {
     }
     updateUser(user: User) {
         return this.http.put<User>(`http://localhost:3000/api/v1/users/${user.id}`, user);
+    }
+
+    getUsersCount(): Observable<number> {
+        return this.http.get<number>(`${this.apiURLUsers}/get/count`).pipe(map((res: any) => res.userCount));
     }
 }
