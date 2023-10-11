@@ -30,4 +30,7 @@ export class ProductsService {
     getProductsCount(): Observable<number> {
         return this.http.get<number>(`${this.apiURLProducts}/get/count`).pipe(map((res: any) => res.productCount));
     }
+    getFeaturedProducts(count: number): Observable<Product[]> {
+        return this.http.get<Product[]>(`${this.apiURLProducts}/get/featured/${count}`);
+    }
 }
