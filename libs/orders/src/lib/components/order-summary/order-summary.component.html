@@ -1,0 +1,21 @@
+<div class="order-summary">
+  <h3>Order Summary</h3>
+  <div class="summary-price">
+    <span>Items Price</span>
+    <span>{{ totalPrice | currency }}
+    </span>
+  </div>
+  <div class="summary-price">
+    <span>Packing & Shipping</span>
+    <div class="free">Free</div>
+  </div>
+  <div class="to-checkout">
+    <div class="summary-price">
+      <span>Total Price</span>
+      <span> {{ totalPrice | currency }}</span>
+    </div>
+    <div class="checkout-button" *ngIf="!isCheckout">
+      <p-button label="Checkout" (onClick)="onNavigateToCheckout()"></p-button>
+    </div>
+  </div>
+</div>

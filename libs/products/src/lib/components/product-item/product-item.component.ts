@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Product } from '../../models/product';
+import { CartItem, CartService } from '@webappshop/orders';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'products-product-item',
@@ -10,5 +12,14 @@ export class ProductItemComponent {
     @Input()
     product!: Product;
 
-    onAddProductToCart() {}
+    constructor(private cartService: CartService, private messageService: MessageService) {}
+
+    onAddProductToCart() {
+        const cartItem: CartItem = {
+            productId: this.product.id,
+            quantity: 1
+        };
+        this.cartService.setCartItem();
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product is added' });
+    }
 }

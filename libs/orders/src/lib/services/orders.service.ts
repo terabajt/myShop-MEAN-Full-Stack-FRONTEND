@@ -32,4 +32,7 @@ export class OrdersService {
     getTotalSales(): Observable<number> {
         return this.http.get<number>(`${this.apiURLOrders}/get/totalsales`).pipe(map((res: any) => res.totalsales));
     }
+    getProduct(productId: string): Observable<Product> {
+        return this.http.get<any>(`http://localhost:3000/api/v1/products/${productId}`);
+    }
 }

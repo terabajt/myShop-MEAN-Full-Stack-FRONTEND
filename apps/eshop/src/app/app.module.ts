@@ -13,15 +13,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavComponent } from './shared/nav/nav.component';
 import { ProductsModule } from '@webappshop/products';
 import { HttpClientModule } from '@angular/common/http';
+import { OrdersModule } from '@webappshop/orders';
+import { UsersModule } from '@webappshop/users';
 
 @NgModule({
     declarations: [AppComponent, HomePageComponent, HeaderComponent, FooterComponent, NavComponent],
     imports: [
         BrowserModule,
         UiModule,
+        OrdersModule,
         ProductsModule,
         HttpClientModule,
         AccordionModule,
+        UsersModule,
         BrowserAnimationsModule,
         RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' })
     ],
