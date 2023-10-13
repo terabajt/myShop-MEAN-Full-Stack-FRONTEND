@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { Product } from '../../models/product';
-import { ProductsService } from '../../services/products.service';
 
 @Component({
     selector: 'products-product-item',
@@ -10,5 +9,6 @@ import { ProductsService } from '../../services/products.service';
 export class ProductItemComponent {
     @Input()
     product!: Product;
-    constructor() {}
+
+    onAddProductToCart() {}
 }
