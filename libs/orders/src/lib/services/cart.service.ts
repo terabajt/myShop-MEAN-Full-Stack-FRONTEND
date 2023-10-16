@@ -10,7 +10,7 @@ export class CartService {
     cart$: BehaviorSubject<Cart> = new BehaviorSubject(this.getCart());
 
     initCartLocalStorage() {
-        const cart: Cart = this.getCart();
+        const cart: Cart | null = this.getCart();
         if (!cart) {
             const initialCart = {
                 items: []
@@ -29,31 +29,34 @@ export class CartService {
     }
 
     getCart(): Cart {
-        if (!localStorage.getItem()) console.log('jest null');
-        const cartJsonString: Cart = localStorage.getItem(CART_KEY);
-        const cart: Cart = JSON.parse(cartJsonString);
-        return cart;
+        const cartJsonString: string | null = localStorage.getItem(CART_KEY);
+        if (cartJsonString) {
+            const cart: Cart = JSON.parse(cartJsonString);
+            return cart;
+        }
+        return {};
     }
-    setCartItem(cartItem: CartItem, updateCartItem?: boolean): Cart {
-        const cart = this.getCart();
-        const cartItemExist = cart.items?.find((item) => {
-            item.productId === cartItem.productId;
-            if (cartItemExist) {
-                cart.items?.map((item) => {
-                    if (item.productId === cartItem.productId) {
-                        if (updateCartItem) {
-                            item.quantity = cartItem.quantity;
-                        } else {
-                            item.quantity = item.quantity + cartItem.quantity;
-                        }
-
-                        return item;
+    setCartItem(cartItem: CartItem, updateCartItem?: boolean) {
+        const cart: Cart | null = this.getCart();
+        const cartItemExist = cart?.items?.find((item) => item.productId === cartItem?.productId);
+        if (cartItemExist && cart) {
+            cart?.items?.map((item) => {
+                if (item.productId === cartItem.productId) {
+                    if (updateCartItem) {
+                        return (item.quantity = cartItem.quantity);
+                    } else {
+                        const value = item.quantity;
+                        const cartValue = cartItem.quantity;
+                        if (value && cartValue) return value + cartValue;
+                        return null;
                     }
-                });
-            } else {
-                cart.item.push(cartItem);
-            }
-        });
+                    return item;
+                }
+                return null;
+            });
+        } else {
+            return cart?.items?.push(cartItem);
+        }
 
         const cartJson = JSON.stringify(cart);
         localStorage.setItem(CART_KEY, cartJson);
@@ -62,12 +65,12 @@ export class CartService {
     }
     deleteCartItem(productId: string) {
         const cart = this.getCart();
-        const newCart = cart.items?.filter((item) => item.productId !== productId);
-        cart.items = newCart;
-
-        const cartJsonString = JSON.stringify(cart);
-        localStorage.setItem(CART_KEY, cartJsonString);
-
-        this.cart$.next(cart);
+        if (cart) {
+            const newCart = cart.items?.filter((item) => item.productId !== productId);
+            cart.items = newCart;
+            const cartJsonString = JSON.stringify(cart);
+            localStorage.setItem(CART_KEY, cartJsonString);
+            this.cart$.next(cart);
+        }
     }
 }

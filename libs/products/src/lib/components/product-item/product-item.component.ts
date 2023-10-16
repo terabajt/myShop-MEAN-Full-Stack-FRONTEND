@@ -19,7 +19,7 @@ export class ProductItemComponent {
             productId: this.product.id,
             quantity: 1
         };
-        this.cartService.setCartItem();
+        this.cartService.setCartItem(cartItem);
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product is added' });
     }
 }

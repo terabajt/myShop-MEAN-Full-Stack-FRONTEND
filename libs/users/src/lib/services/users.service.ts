@@ -5,13 +5,17 @@ import { Observable, map } from 'rxjs';
 import * as countriesLib from 'i18n-iso-countries';
 declare const require: (arg0: string) => countriesLib.LocaleData;
 import { environment } from '../../../../../environments/environment';
+import { UsersFacade } from '../state/users.facade';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UsersService {
+    initAppSession() {
+        this.usersFacade.buildUserSession();
+    }
     apiURLUsers = environment.apiURL + 'users';
-    constructor(private http: HttpClient) {
+    constructor(private usersFacade: UsersFacade, private http: HttpClient) {
         countriesLib.registerLocale(require('i18n-iso-countries/langs/en.json'));
     }
 
@@ -46,5 +50,12 @@ export class UsersService {
 
     getUsersCount(): Observable<number> {
         return this.http.get<number>(`${this.apiURLUsers}/get/count`).pipe(map((res: any) => res.userCount));
+    }
+    observeCurrentUser() {
+        return this.usersFacade.currentUser$;
+    }
+
+    isCurrentUserAuth() {
+        return this.usersFacade.isAuthenticated$;
     }
 }

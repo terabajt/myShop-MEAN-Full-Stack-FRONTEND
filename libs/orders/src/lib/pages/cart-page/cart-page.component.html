@@ -19,7 +19,7 @@
             <div class="cart-item-name">{{ cartItem.product.name }}</div>
             <div class="cart-item price">{{ cartItem.product.price | currency }}</div>
             <div class="cart-item-remove">
-              <p-button icon="pi pi-trash" (onClick)="onDeleteCartItem()"></p-button>
+              <p-button icon="pi pi-trash" (onClick)="onDeleteCartItem(cartItem.product.id)"></p-button>
             </div>
           </div>
           <div class="col-3">

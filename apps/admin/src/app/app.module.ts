@@ -37,8 +37,12 @@ import { OrdersListComponent } from './pages/orders/orders-list/orders-list.comp
 import { OrdersDetailComponent } from './pages/orders/orders-detail/orders-detail.component';
 import { FieldsetModule } from 'primeng/fieldset';
 import { JwtInterceptor, UsersModule } from '@webappshop/users';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 
 const UX_MODULE = [
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot([]),
     ColorPickerModule,
     ConfirmDialogModule,
     InputTextModule,

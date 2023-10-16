@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
-import { Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { OrdersService } from '../../services/orders.service';
 import { CartItemDetailed } from '../../models/cart';
 
@@ -19,7 +19,7 @@ export class CartPageComponent implements OnInit, OnDestroy {
         this.router.navigate(['/products']);
     }
 
-    onDeleteCartItem(cartItem: CartItemDetailed) {
+    onDeleteCartItem(cartItem: string) {
         this.cartService.deleteCartItem(cartItem);
     }
 
@@ -30,22 +30,28 @@ export class CartPageComponent implements OnInit, OnDestroy {
     private _getCartDetails() {
         this.cartService.cart$.pipe(takeUntil(this.endSubs$)).subscribe((respCart) => {
             this.cartItemsDetailed = [];
-            this.cartCount = respCart?.items.length ?? 0;
-            respCart.items?.forEach((cartItem) => {
-                this.ordersServices.getProduct(cartItem.productId).subscribe((products) => {
-                    this.cartItemsDetailed.push({
-                        product: products,
-                        quantity: cartItem.quantity
-                    });
+
+            if (respCart) {
+                this.cartCount = respCart?.items?.length ?? 0;
+                respCart.items?.forEach((cartItem) => {
+                    if (cartItem.productId) {
+                        this.ordersServices.getProduct(cartItem.productId).subscribe((products) => {
+                            this.cartItemsDetailed.push({
+                                product: products,
+                                quantity: cartItem.quantity
+                            });
+                        });
+                    }
                 });
-            });
+            }
         });
     }
-    onUpdateCartItemQuantity(event, cartItem: CartItemDetailed) {
+    onUpdateCartItemQuantity(event: any, cartItem: CartItemDetailed) {
+        const newValue = event.value;
         this.cartService.setCartItem(
             {
                 productId: cartItem.product.id,
-                quantity: event.value
+                quantity: newValue
             },
             true
         );

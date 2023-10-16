@@ -13,7 +13,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class LoginComponent implements OnInit, OnDestroy {
     endsubs$: Subject<any> = new Subject();
-    loginFormGroup: FormGroup;
+    loginFormGroup: FormGroup = new FormGroup({});
     authError = false;
     errorMessage = 'Email or password are wrong.';
     constructor(private formBuilder: FormBuilder, private auth: AuthService, private localstorageService: LocalstorageService, private router: Router) {}
@@ -34,8 +34,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     onSubmit() {
         const loginData = {
-            email: this.loginForm.email.value,
-            password: this.loginForm.password.value
+            email: this.loginForm['email'].value,
+            password: this.loginForm['password'].value
         };
         this.auth
             .login(loginData.email, loginData.password)
@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             .subscribe(
                 (user) => {
                     this.authError = false;
-                    this.localstorageService.setToken(user.token);
+                    if (user.token) this.localstorageService.setToken(user.token);
                     this.router.navigate(['/']);
                 },
                 (error: HttpErrorResponse) => {

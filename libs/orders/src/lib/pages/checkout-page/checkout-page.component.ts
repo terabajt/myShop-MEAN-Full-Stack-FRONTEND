@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User, UsersService } from '@webappshop/users';
 import { MessageService } from 'primeng/api';
@@ -35,13 +36,16 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
     editmode = false;
     users = <User[]>[];
     form!: FormGroup;
-    currentUserId: string;
-    countries = [];
+    currentUserId = '';
+    countries: { id: string; name: string }[] = [];
     orderItems: OrderItem[] = [];
     isSubmitted = false;
     userId = '';
+    unsubscribe$: Subject<any> = new Subject();
+
     ngOnInit(): void {
         this._initForm();
+        this._autoFillUserData();
         this._getCartItems();
         this._getUsers();
         this._getCountries();
@@ -50,12 +54,14 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
 
     private _getCartItems() {
         const cart: Cart = this.cartService.getCart();
-        this.orderItems = cart.items?.map((item) => {
-            return {
-                product: item.productId,
-                quantity: item.quantity
-            };
-        });
+        if (cart && cart.items) {
+            this.orderItems = cart.items.map((item) => {
+                return <OrderItem>{
+                    product: item.productId,
+                    quantity: item.quantity
+                };
+            });
+        }
     }
 
     private _getCountries() {
@@ -102,16 +108,16 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
 
         const user: User = {
             id: this.currentUserId,
-            name: this.userForm.name.value,
-            password: this.userForm.password.value,
-            email: this.userForm.email.value,
-            phone: this.userForm.phone.value,
-            isAdmin: this.userForm.isAdmin.value,
-            street: this.userForm.street.value,
-            apartament: this.userForm.apartament.value,
-            zip: this.userForm.zip.value,
-            city: this.userForm.city.value,
-            country: this.userForm.country.value
+            name: this.userForm['name'].value,
+            password: this.userForm['password'].value,
+            email: this.userForm['email'].value,
+            phone: this.userForm['phone'].value,
+            isAdmin: this.userForm['isAdmin'].value,
+            street: this.userForm['street'].value,
+            apartament: this.userForm['apartament'].value,
+            zip: this.userForm['zip'].value,
+            city: this.userForm['city'].value,
+            country: this.userForm['country'].value
         };
 
         if (this.editmode) {
@@ -149,40 +155,41 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
     }
     private _checkEditMode() {
         this.route.params.pipe(takeUntil(this.endsubs$)).subscribe((params) => {
-            if (params.id) {
+            if (params['id']) {
                 this.editmode = true;
-                this.currentUserId = params.id;
-                this.usersServices.getUser(params.id).subscribe((user) => {
-                    this.userForm.name.setValue(user.name);
-                    this.userForm.email.setValue(user.email);
-                    this.userForm.isAdmin.setValue(user.isAdmin);
-                    this.userForm.street.setValue(user.street);
-                    this.userForm.apartament.setValue(user.apartament);
-                    this.userForm.zip.setValue(user.zip);
-                    this.userForm.city.setValue(user.city);
-                    this.userForm.country.setValue(user.country);
-                    this.userForm.password.setValidators([]);
-                    this.userForm.password.updateValueAndValidity();
+                this.currentUserId = params['id'];
+                this.usersServices.getUser(params['id']).subscribe((user) => {
+                    this.userForm['name'].setValue(user.name);
+                    this.userForm['email'].setValue(user.email);
+                    this.userForm['isAdmin'].setValue(user.isAdmin);
+                    this.userForm['street'].setValue(user.street);
+                    this.userForm['apartament'].setValue(user.apartament);
+                    this.userForm['zip'].setValue(user.zip);
+                    this.userForm['city'].setValue(user.city);
+                    this.userForm['country'].setValue(user.country);
+                    this.userForm['password'].setValidators([]);
+                    this.userForm['password'].updateValueAndValidity();
                 });
             }
         });
     }
     ngOnDestroy(): void {
         this.endsubs$.complete();
+        this.unsubscribe$.complete();
     }
     onPlaceOrder() {
         this.isSubmitted = true;
-        if (this.userForm.invalid) {
+        if (this.userForm['invalid']) {
             return;
         }
         const order: Order = {
             orderItems: this.orderItems,
-            shippingAddress: this.userForm.street.value,
-            ShippingAddress2: this.userForm.apartament.value,
-            city: this.userForm.city.value,
-            zip: this.userForm.zip.value,
-            country: this.userForm.country.value,
-            phone: this.userForm.phone.value,
+            shippingAddress: this.userForm['street'].value,
+            ShippingAddress2: this.userForm['apartament'].value,
+            city: this.userForm['city'].value,
+            zip: this.userForm['zip'].value,
+            country: this.userForm['country'].value,
+            phone: this.userForm['phone'].value,
             status: 0,
             user: this.userId,
             dateOrdered: `${Date.now()}`
@@ -198,5 +205,24 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
                 console.log('Error of create order');
             }
         );
+    }
+    private _autoFillUserData() {
+        this.usersServices
+            .observeCurrentUser()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((user: User) => {
+                if (user) {
+                    const userId = user.id;
+                    if (typeof userId === 'string') this.userId = userId;
+                    this.userForm['name'].setValue(user.name);
+                    this.userForm['email'].setValue(user.email);
+                    this.userForm['phone'].setValue(user.phone);
+                    this.userForm['city'].setValue(user.city);
+                    this.userForm['country'].setValue(user.country);
+                    this.userForm['zip'].setValue(user.zip);
+                    this.userForm['apartament'].setValue(user.apartament);
+                    this.userForm['apartament'].setValue(user.street);
+                }
+            });
     }
 }

@@ -12,16 +12,19 @@ import { AccordionModule } from 'primeng/accordion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavComponent } from './shared/nav/nav.component';
 import { ProductsModule } from '@webappshop/products';
-import { HttpClientModule } from '@angular/common/http';
-import { OrdersModule } from '@webappshop/orders';
-import { UsersModule } from '@webappshop/users';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { JwtInterceptor, UsersModule } from '@webappshop/users';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
     declarations: [AppComponent, HomePageComponent, HeaderComponent, FooterComponent, NavComponent],
     imports: [
+        StoreModule.forRoot({}),
+        EffectsModule.forRoot([]),
         BrowserModule,
         UiModule,
-        OrdersModule,
         ProductsModule,
         HttpClientModule,
         AccordionModule,
@@ -29,7 +32,7 @@ import { UsersModule } from '@webappshop/users';
         BrowserAnimationsModule,
         RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' })
     ],
-    providers: [],
+    providers: [MessageService, { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -8,12 +8,17 @@ import { CartService } from '../../services/cart.service';
 })
 export class CartIconComponent implements OnInit {
     cartCount = 0;
+    cartCountString = this.cartCount.toString();
     constructor(private cartService: CartService) {}
 
     ngOnInit(): void {
         this.cartService.cart$.subscribe((cart) => {
-            this.cartCount = cart?.items.length ?? 0;
+            const count = cart?.items?.length ?? 0;
+            if (count) this.cartCount = count;
         });
-        this.cartCount = this.cartService.getCart().items?.length;
+        if (this.cartService.getCart()) {
+            const count = this.cartService.getCart()?.items?.length;
+            if (count) this.cartCount = +count;
+        }
     }
 }
