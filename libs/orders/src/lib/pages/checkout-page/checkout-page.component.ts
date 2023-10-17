@@ -183,8 +183,8 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
         }
         const order: Order = {
             orderItems: this.orderItems,
-            shippingAddress: this.userForm['street'].value,
-            ShippingAddress2: this.userForm['apartament'].value,
+            shippingAddress1: this.userForm['street'].value,
+            shippingAddress2: this.userForm['apartament'].value,
             city: this.userForm['city'].value,
             zip: this.userForm['zip'].value,
             country: this.userForm['country'].value,
