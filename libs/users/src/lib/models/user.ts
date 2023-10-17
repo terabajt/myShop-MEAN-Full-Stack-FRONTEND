@@ -7,7 +7,7 @@ export class User {
     token?: string;
     isAdmin?: boolean;
     street?: string;
-    apartament?: string;
+    apartment?: string;
     zip?: string;
     city?: string;
     country?: string;

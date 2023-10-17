@@ -7,7 +7,7 @@ export const USERS_FEATURE_KEY = 'users';
 
 export interface UsersState {
     user: User | null;
-    isAuthenricated: boolean;
+    isAuthenticated: boolean;
 }
 
 export interface UsersPartialState {
@@ -16,15 +16,15 @@ export interface UsersPartialState {
 
 export const initialUsersState: UsersState = {
     user: null,
-    isAuthenricated: false
+    isAuthenticated: false
 };
 const usersReducer = createReducer(
     initialUsersState,
     on(UsersActions.buildUserSession, (state) => ({
         ...state
     })),
-    on(UsersActions.buildUserSessionSuccess, (state, action) => ({ ...state, user: action.user, isAuthenricated: true })),
-    on(UsersActions.buildUserSessionFailed, (state) => ({ ...state, user: null, isAuthenricated: false }))
+    on(UsersActions.buildUserSessionSuccess, (state, action) => ({ ...state, user: action.user, isAuthenticated: true })),
+    on(UsersActions.buildUserSessionFailed, (state) => ({ ...state, user: null, isAuthenticated: false }))
 );
 
 export function reducer(state: UsersState | undefined, action: Action) {

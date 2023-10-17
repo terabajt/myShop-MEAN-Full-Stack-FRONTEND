@@ -18,12 +18,14 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { MessageService } from 'primeng/api';
 import { OrdersModule } from '@webappshop/orders';
+import * as fromUsers from './../../../../libs/users/src/lib/state/users.reducer';
 
 @NgModule({
     declarations: [AppComponent, HomePageComponent, HeaderComponent, FooterComponent, NavComponent],
     imports: [
         StoreModule.forRoot({}),
         EffectsModule.forRoot([]),
+        StoreModule.forFeature('users', fromUsers.reducer),
         BrowserModule,
         UiModule,
         OrdersModule,

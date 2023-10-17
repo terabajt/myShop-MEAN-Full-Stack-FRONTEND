@@ -44,7 +44,7 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
             countInStock: ['', Validators.required],
             description: ['', Validators.required],
             richDescription: [''],
-            image: ['', Validators.required],
+            image: [''],
             isFeatured: [false]
         });
     }
@@ -71,21 +71,10 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
     }
     onSubmit() {
         if (this.form.invalid) {
-            return;
+            return console.log('invalid');
         }
         const productFormData = new FormData();
-        //MANUAL VERSION
-        // productFormData.append('name', this.productForm.name.value);
-        // productFormData.append('brand', this.productForm.brand.value);
-        // productFormData.append('price', this.productForm.price.value);
-        // productFormData.append('category', this.productForm.category.value);
-        // productFormData.append('countInStock', this.productForm.countInStock.value);
-        // productFormData.append('description', this.productForm.description.value);
-        // productFormData.append('richDescription', this.productForm.richDescription.value);
-        // productFormData.append('image', this.productForm.image.value);
-        // productFormData.append('isFeatured', this.productForm.isFeatured.value);
 
-        //MAP VERSION
         Object.keys(this.productForm).map((key) => {
             productFormData.append(key, this.productForm[key].value);
         });

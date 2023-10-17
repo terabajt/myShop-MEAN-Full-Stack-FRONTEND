@@ -20,8 +20,6 @@ export class AuthGuard implements CanActivate {
         return false;
     }
     private _tokenExpired(expiration: number): boolean {
-        console.log(expiration);
-        console.log(Math.floor(new Date().getTime() / 1000));
         return Math.floor(new Date().getTime() / 1000) <= expiration;
     }
 }

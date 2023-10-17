@@ -46,7 +46,7 @@ export class UsersFormComponent implements OnInit, OnDestroy {
             phone: ['', Validators.required],
             isAdmin: [false],
             street: [''],
-            apartament: [''],
+            apartment: [''],
             zip: [''],
             city: [''],
             country: ['']
@@ -86,7 +86,7 @@ export class UsersFormComponent implements OnInit, OnDestroy {
             phone: this.userForm.phone.value,
             isAdmin: this.userForm.isAdmin.value,
             street: this.userForm.street.value,
-            apartament: this.userForm.apartament.value,
+            apartment: this.userForm.apartment.value,
             zip: this.userForm.zip.value,
             city: this.userForm.city.value,
             country: this.userForm.country.value
@@ -135,10 +135,11 @@ export class UsersFormComponent implements OnInit, OnDestroy {
                     this.userForm.email.setValue(user.email);
                     this.userForm.isAdmin.setValue(user.isAdmin);
                     this.userForm.street.setValue(user.street);
-                    this.userForm.apartament.setValue(user.apartament);
+                    this.userForm.apartment.setValue(user.apartment);
                     this.userForm.zip.setValue(user.zip);
                     this.userForm.city.setValue(user.city);
                     this.userForm.country.setValue(user.country);
+                    this.userForm.phone.setValue(user.phone);
                     this.userForm.password.setValidators([]);
                     this.userForm.password.updateValueAndValidity();
                 });
