@@ -2,74 +2,63 @@
   <div>
     <p-button label="Back to cart" icon="pi pi-arrow-left" (onClick)="onBackToCart()"></p-button>
   </div>
-</div>
-<div class="grid checkout-form" *ngIf="userForm">
-  <div class="col-8">
-    <form [formGroup]="form">
-      <div class="formgrid grid">
-        <div class="field col-4">
-          <label for="name">Name</label>
-          <input formControlName="name" id="name" type="text"
-            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
-          <small *ngIf="userForm?.['name']?.invalid && userForm?.['name']?.touched" class="p-error">Name is
-            required.</small>
+  <div class="grid checkout-form" *ngIf="userForm">
+    <div class="col-8">
+      <form [formGroup]="form">
+        <div class="formgrid grid">
+          <div class="field col-4">
+            <label for="name">Name</label>
+            <input formControlName="name" id="name" type="text"
+              class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            <small *ngIf="userForm?.['name']?.invalid && userForm?.['name']?.touched" class="p-error">Name is
+              required.</small>
+          </div>
+          <div class="field col-4">
+            <label for="email">Email</label>
+            <input formControlName="email" id="email" type="text"
+              class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            <small *ngIf="userForm?.['email']?.invalid && userForm?.['email']?.touched"> <span
+                *nfIf="userForm.email.errors.required" class="p-error">Email is
+                required.</span>
+              <span *ngIf="userForm?.['email']?.errors?.['email']">Email is invalid</span></small>
+          </div>
+          <div class="flex flex-column col-4">
+            <label for="phone">Phone</label>
+            <p-inputMask mask="(99) 999-9999" formControlName="phone" placeholder="(999) 999-9999"></p-inputMask>
+            <small *ngIf="userForm?.['phone']?.invalid && userForm?.['phone']?.touched" class="p-error">Phone is
+              required.</small>
+          </div>
         </div>
-        <div class="field col-4">
-          <label for="email">Email</label>
-          <input formControlName="email" id="email" type="text"
-            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
-          <small *ngIf="userForm?.['email']?.invalid && userForm?.['email']?.touched"> <span
-              *nfIf="userForm.email.errors.required" class="p-error">Email is
-              required.</span>
-            <span *ngIf="userForm?.['email']?.errors?.['email']">Email is invalid</span></small>
+        <div class="fluid formgrid grid">
+          <div class="flex flex-column gap-2 mt-2 col-4">
+            <label for="street">Street</label>
+            <input formControlName="street" id="street" type="text" pInputText>
+          </div>
+          <div class="mt-2 col-4 flex flex-column gap-2">
+            <label for="apartament">Apartament</label>
+            <input formControlName="apartament" id="apartament" type="text" pInputText>
+          </div>
+          <div class="mt-2 flex flex-column gap-2 col-4">
+            <label for="zip">Zip code</label>
+            <input formControlName="zip" id="zip" type="text" pInputText>
+          </div>
+          <div class=" mt-2 flex flex-column gap-2 col-4">
+            <label for="city">City</label>
+            <input formControlName="city" id="city" type="text" pInputText>
+          </div>
+          <div class="mt-2 flex flex-column gap-2 col-4">
+            <label for="country">Country</label>
+            <p-dropdown [options]="countries" formControlName="country" optionLabel="name" optionValue="id"
+              [filter]="true" filterBy="name" [showClear]="true" placeholder="Select a country"></p-dropdown>
+          </div>
         </div>
-        <div class="field col-4">
-          <label for="password">Password</label>
-          <input formControlName="password" id="password" type="password"
-            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
-          <small *ngIf="userForm?.['password']?.invalid && userForm?.['password']?.touched" class="p-error">Password is
-            required.</small>
-        </div>
-        <div class="flex flex-column col-4">
-          <label for="phone">Phone</label>
-          <p-inputMask mask="(99) 999-9999" formControlName="phone" placeholder="(999) 999-9999"></p-inputMask>
-          <small *ngIf="userForm?.['phone']?.invalid && userForm?.['phone']?.touched" class="p-error">Phone is
-            required.</small>
-        </div>
-        <div class="ml-5 flex flex-column gap-2 col-4">
-          <label for="isadmin">Is Admin?</label>
-          <p-inputSwitch formControlName="isAdmin"></p-inputSwitch>
-        </div>
+      </form>
+    </div>
+    <div class="col-4">
+      <orders-order-summary></orders-order-summary>
+      <div class="checkout-button">
+        <p-button label="Place-Order" (onClick)="onPlaceOrder()"></p-button>
       </div>
-      <div class="fluid formgrid grid">
-        <div class="flex flex-column gap-2 mt-2 col-4">
-          <label for="street">Street</label>
-          <input formControlName="street" id="street" type="text" pInputText>
-        </div>
-        <div class="mt-2 col-4 flex flex-column gap-2">
-          <label for="apartament">Apartament</label>
-          <input formControlName="apartament" id="apartament" type="text" pInputText>
-        </div>
-        <div class="mt-2 flex flex-column gap-2 col-4">
-          <label for="zip">Zip code</label>
-          <input formControlName="zip" id="zip" type="text" pInputText>
-        </div>
-        <div class=" mt-2 flex flex-column gap-2 col-4">
-          <label for="city">City</label>
-          <input formControlName="city" id="city" type="text" pInputText>
-        </div>
-        <div class="mt-2 flex flex-column gap-2 col-4">
-          <label for="country">Country</label>
-          <p-dropdown [options]="countries" formControlName="country" optionLabel="name" optionValue="id"
-            [filter]="true" filterBy="name" [showClear]="true" placeholder="Select a country"></p-dropdown>
-        </div>
-      </div>
-    </form>
-  </div>
-  <div class="col-4">
-    <orders-order-summary></orders-order-summary>
-    <div class="checkout-button">
-      <p-button label="Place-Order" (onClick)="onPlaceOrder()"></p-button>
     </div>
   </div>
 </div>

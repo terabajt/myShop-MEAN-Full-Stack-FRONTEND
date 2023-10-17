@@ -4,6 +4,7 @@ import { CartService } from '../../services/cart.service';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { OrdersService } from '../../services/orders.service';
 import { CartItemDetailed } from '../../models/cart';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'orders-cart-page',
@@ -14,13 +15,14 @@ export class CartPageComponent implements OnInit, OnDestroy {
     cartItemsDetailed: CartItemDetailed[] = [];
     endSubs$: Subject<any> = new Subject();
     cartCount = 0;
-    constructor(private router: Router, private cartService: CartService, private ordersServices: OrdersService) {}
+    constructor(private router: Router, private messageService: MessageService, private cartService: CartService, private ordersServices: OrdersService) {}
     onBackToShop() {
         this.router.navigate(['/products']);
     }
 
     onDeleteCartItem(cartItem: string) {
         this.cartService.deleteCartItem(cartItem);
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Cart is updated' });
     }
 
     ngOnInit(): void {
@@ -55,6 +57,7 @@ export class CartPageComponent implements OnInit, OnDestroy {
             },
             true
         );
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Cart is updated' });
     }
     ngOnDestroy(): void {
         this.endSubs$.complete();

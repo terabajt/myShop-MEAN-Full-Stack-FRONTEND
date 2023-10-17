@@ -14,6 +14,9 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { DropdownModule } from 'primeng/dropdown';
 import { ThankYouComponent } from './pages/thank-you/thank-you.component';
 import { AuthGuard } from '@webappshop/users';
+import { CartService } from './services/cart.service';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 const routes: Routes = [
     {
@@ -22,7 +25,7 @@ const routes: Routes = [
     },
     {
         path: 'checkout',
-        canActivate: [AuthGuard],
+        // canActivate: [AuthGuard],
         component: CheckoutPageComponent
     },
     {
@@ -36,6 +39,7 @@ const routes: Routes = [
         ReactiveFormsModule,
         BadgeModule,
         InputTextModule,
+        ToastModule,
         FormsModule,
         InputNumberModule,
         InputMaskModule,
@@ -43,7 +47,13 @@ const routes: Routes = [
         ButtonModule,
         RouterModule.forChild(routes)
     ],
+
     declarations: [CartIconComponent, CartPageComponent, OrderSummaryComponent, CheckoutPageComponent, ThankYouComponent],
+    providers: [MessageService],
     exports: [CartIconComponent, CartPageComponent, OrderSummaryComponent, CheckoutPageComponent, ThankYouComponent]
 })
-export class OrdersModule {}
+export class OrdersModule {
+    constructor(cartService: CartService) {
+        cartService.initCartLocalStorage();
+    }
+}

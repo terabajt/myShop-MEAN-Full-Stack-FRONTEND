@@ -1,4 +1,5 @@
 <div class="cart-page">
+  <p-toast></p-toast>
   <div class="grid">
     <div class="col-8">
       <div>
@@ -11,13 +12,13 @@
         Shipping aftyer payment .....
       </div>
       <div class="cart-item mb-5" *ngFor="let cartItem of cartItemsDetailed">
-        <div class="grid fluid">
+        <div class="grid p-fluid">
           <div class="col-2 cart-item-image">
             <img [src]="cartItem.product.image" [attr.alt]="cartItem.product.name">
           </div>
           <div class="col-7">
             <div class="cart-item-name">{{ cartItem.product.name }}</div>
-            <div class="cart-item price">{{ cartItem.product.price | currency }}</div>
+            <div class="cart-item-price">{{ cartItem.product.price | currency }}</div>
             <div class="cart-item-remove">
               <p-button icon="pi pi-trash" (onClick)="onDeleteCartItem(cartItem.product.id)"></p-button>
             </div>
@@ -29,12 +30,17 @@
             </div>
             <div class="cart-item-subtotal">
               Subtotal:
-              <span class="cart-item-subtotal-value"> {{ cartItem.product.price * cartItem.product.quantity | currency
-                }}</span>
+              <span class="cart-item-subtotal-value">
+                {{ (cartItem?.product?.price !== undefined && cartItem?.quantity !== undefined) ?
+                (cartItem!.product!.price! * cartItem!.quantity! | currency : 'USD') : '' }}
+              </span>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <div class="col-4">
+      <orders-order-summary></orders-order-summary>
     </div>
   </div>
 </div>

@@ -40,7 +40,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
     countries: { id: string; name: string }[] = [];
     orderItems: OrderItem[] = [];
     isSubmitted = false;
-    userId = '';
+    userId = '65129b4d5fb5f193621d7592';
     unsubscribe$: Subject<any> = new Subject();
 
     ngOnInit(): void {
@@ -49,11 +49,11 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
         this._getCartItems();
         this._getUsers();
         this._getCountries();
-        this._checkEditMode();
+        // this._checkEditMode();
     }
 
     private _getCartItems() {
-        const cart: Cart = this.cartService.getCart();
+        const cart: Cart | null = this.cartService.getCart();
         if (cart && cart.items) {
             this.orderItems = cart.items.map((item) => {
                 return <OrderItem>{
@@ -80,52 +80,51 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
             country: ['', Validators.required]
         });
     }
-    private _updateUser(user: User) {
-        this.usersServices
-            .updateUser(user)
-            .pipe(takeUntil(this.endsubs$))
-            .subscribe(
-                (user: User) => {
-                    this.messageService.add({ severity: 'success', summary: 'Success', detail: `User ${user.name} is updated ` });
-                    timer(1000)
-                        .toPromise()
-                        .then(() => {
-                            this.location.back();
-                        });
-                },
-                () => {
-                    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'User is not updated' });
-                }
-            );
-    }
+    // private _updateUser(user: User) {
+    //     this.usersServices
+    //         .updateUser(user)
+    //         .pipe(takeUntil(this.endsubs$))
+    //         .subscribe(
+    //             (user: User) => {
+    //                 this.messageService.add({ severity: 'success', summary: 'Success', detail: `User ${user.name} is updated ` });
+    //                 timer(1000)
+    //                     .toPromise()
+    //                     .then(() => {
+    //                         this.location.back();
+    //                     });
+    //             },
+    //             () => {
+    //                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'User is not updated' });
+    //             }
+    //         );
+    // }
     get userForm() {
         return this.form.controls;
     }
-    onSubmit() {
-        if (this.form.invalid) {
-            return;
-        }
+    // onSubmit() {
+    //     if (this.form.invalid) {
+    //         return;
+    //     }
+    //     const order: Order = {
+    //         orderItems: this.orderItems,
+    //         shippingAddress: this.userForm.street.value,
+    //         ShippingAddress2: this.userForm.apartament.value,
+    //         city: this.userForm.city.value,
+    //         zip: this.userForm.zip.value,
+    //         country: this.userForm.country.value,
+    //         phone: this.userForm.phone.value,
+    //         status: this.userForm.status.value,
+    //         totalPrice: this.userForm.totalPrice.value,
+    //         user: this.userId,
+    //         dateOrdered: `${Date.now()}`
+    //     };
 
-        const user: User = {
-            id: this.currentUserId,
-            name: this.userForm['name'].value,
-            password: this.userForm['password'].value,
-            email: this.userForm['email'].value,
-            phone: this.userForm['phone'].value,
-            isAdmin: this.userForm['isAdmin'].value,
-            street: this.userForm['street'].value,
-            apartament: this.userForm['apartament'].value,
-            zip: this.userForm['zip'].value,
-            city: this.userForm['city'].value,
-            country: this.userForm['country'].value
-        };
-
-        if (this.editmode) {
-            this._updateUser(user);
-        } else {
-            this._addUser(user);
-        }
-    }
+    //     if (this.editmode) {
+    //         this._updateUser(user);
+    //     } else {
+    //         this._addUser(user);
+    //     }
+    // }
     private _getUsers() {
         this.usersServices
             .getUsers()
@@ -153,26 +152,26 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
                 }
             );
     }
-    private _checkEditMode() {
-        this.route.params.pipe(takeUntil(this.endsubs$)).subscribe((params) => {
-            if (params['id']) {
-                this.editmode = true;
-                this.currentUserId = params['id'];
-                this.usersServices.getUser(params['id']).subscribe((user) => {
-                    this.userForm['name'].setValue(user.name);
-                    this.userForm['email'].setValue(user.email);
-                    this.userForm['isAdmin'].setValue(user.isAdmin);
-                    this.userForm['street'].setValue(user.street);
-                    this.userForm['apartament'].setValue(user.apartament);
-                    this.userForm['zip'].setValue(user.zip);
-                    this.userForm['city'].setValue(user.city);
-                    this.userForm['country'].setValue(user.country);
-                    this.userForm['password'].setValidators([]);
-                    this.userForm['password'].updateValueAndValidity();
-                });
-            }
-        });
-    }
+    // private _checkEditMode() {
+    //     this.route.params.pipe(takeUntil(this.endsubs$)).subscribe((params) => {
+    //         if (params['id']) {
+    //             this.editmode = true;
+    //             this.currentUserId = params['id'];
+    //             this.usersServices.getUser(params['id']).subscribe((user) => {
+    //                 this.userForm['name'].setValue(user.name);
+    //                 this.userForm['email'].setValue(user.email);
+    //                 this.userForm['isAdmin'].setValue(user.isAdmin);
+    //                 this.userForm['street'].setValue(user.street);
+    //                 this.userForm['apartament'].setValue(user.apartament);
+    //                 this.userForm['zip'].setValue(user.zip);
+    //                 this.userForm['city'].setValue(user.city);
+    //                 this.userForm['country'].setValue(user.country);
+    //                 this.userForm['password'].setValidators([]);
+    //                 this.userForm['password'].updateValueAndValidity();
+    //             });
+    //         }
+    //     });
+    // }
     ngOnDestroy(): void {
         this.endsubs$.complete();
         this.unsubscribe$.complete();

@@ -13,6 +13,8 @@ import { ProductPageComponent } from './pages/product-page/product-page.componen
 import { RatingModule } from 'primeng/rating';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { UiModule } from '@webappshop/ui';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 const routes: Routes = [
     {
@@ -29,7 +31,7 @@ const routes: Routes = [
     }
 ];
 @NgModule({
-    imports: [CommonModule, UiModule, InputNumberModule, RatingModule, FormsModule, CheckboxModule, RouterModule.forChild(routes), ButtonModule],
+    imports: [CommonModule, ToastModule, UiModule, InputNumberModule, RatingModule, FormsModule, CheckboxModule, RouterModule.forChild(routes), ButtonModule],
     declarations: [
         ProductsSearchComponent,
         CategoriesBannerComponent,
@@ -38,6 +40,7 @@ const routes: Routes = [
         ProductsListComponent,
         ProductPageComponent
     ],
+    providers: [MessageService],
     exports: [ProductsSearchComponent, CategoriesBannerComponent, ProductItemComponent, FeaturedProductsComponent, ProductsListComponent, ProductPageComponent]
 })
 export class ProductsModule {}

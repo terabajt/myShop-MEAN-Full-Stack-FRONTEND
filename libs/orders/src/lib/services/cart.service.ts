@@ -7,7 +7,7 @@ export const CART_KEY = 'cart';
     providedIn: 'root'
 })
 export class CartService {
-    cart$: BehaviorSubject<Cart> = new BehaviorSubject(this.getCart());
+    cart$: BehaviorSubject<Cart | null> = new BehaviorSubject<Cart | null>(this.getCart());
 
     initCartLocalStorage() {
         const cart: Cart | null = this.getCart();
@@ -28,34 +28,44 @@ export class CartService {
         this.cart$.next(initialCart);
     }
 
-    getCart(): Cart {
+    getCart(): Cart | null {
         const cartJsonString: string | null = localStorage.getItem(CART_KEY);
         if (cartJsonString) {
             const cart: Cart = JSON.parse(cartJsonString);
             return cart;
         }
-        return {};
+        return null; // Zwracamy null, gdy brak koszyka w localStorage
     }
+
     setCartItem(cartItem: CartItem, updateCartItem?: boolean) {
-        const cart: Cart | null = this.getCart();
-        const cartItemExist = cart?.items?.find((item) => item.productId === cartItem?.productId);
-        if (cartItemExist && cart) {
-            cart?.items?.map((item) => {
+        let cart: Cart | null | undefined = this.getCart();
+
+        if (!cart) {
+            cart = {
+                items: []
+            };
+        }
+
+        const cartItemExist = cart?.items?.find((item) => item.productId === cartItem.productId);
+
+        if (cartItemExist) {
+            cart.items?.forEach((item) => {
                 if (item.productId === cartItem.productId) {
                     if (updateCartItem) {
-                        return (item.quantity = cartItem.quantity);
+                        if (cartItem.quantity !== undefined) {
+                            item.quantity = cartItem.quantity;
+                        }
                     } else {
-                        const value = item.quantity;
-                        const cartValue = cartItem.quantity;
-                        if (value && cartValue) return value + cartValue;
-                        return null;
+                        if (cartItem.quantity !== undefined && item.quantity !== undefined) {
+                            item.quantity += cartItem.quantity;
+                        }
                     }
-                    return item;
                 }
-                return null;
             });
         } else {
-            return cart?.items?.push(cartItem);
+            if (cartItem.quantity !== undefined) {
+                cart?.items?.push(cartItem);
+            }
         }
 
         const cartJson = JSON.stringify(cart);
@@ -63,6 +73,7 @@ export class CartService {
         this.cart$.next(cart);
         return cart;
     }
+
     deleteCartItem(productId: string) {
         const cart = this.getCart();
         if (cart) {

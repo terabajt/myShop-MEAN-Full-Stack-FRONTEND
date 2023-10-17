@@ -17,6 +17,7 @@ import { JwtInterceptor, UsersModule } from '@webappshop/users';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { MessageService } from 'primeng/api';
+import { OrdersModule } from '@webappshop/orders';
 
 @NgModule({
     declarations: [AppComponent, HomePageComponent, HeaderComponent, FooterComponent, NavComponent],
@@ -25,6 +26,7 @@ import { MessageService } from 'primeng/api';
         EffectsModule.forRoot([]),
         BrowserModule,
         UiModule,
+        OrdersModule,
         ProductsModule,
         HttpClientModule,
         AccordionModule,

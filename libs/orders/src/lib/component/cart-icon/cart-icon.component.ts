@@ -8,7 +8,6 @@ import { CartService } from '../../services/cart.service';
 })
 export class CartIconComponent implements OnInit {
     cartCount = 0;
-    cartCountString = this.cartCount.toString();
     constructor(private cartService: CartService) {}
 
     ngOnInit(): void {

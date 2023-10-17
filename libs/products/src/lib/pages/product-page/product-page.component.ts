@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../models/product';
 import { Subject, takeUntil } from 'rxjs';
 import { CartItem, CartService } from '@webappshop/orders';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'products-product-page',
@@ -14,7 +15,12 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     quantity = 1;
     product!: Product;
     endSubs$: Subject<any> = new Subject();
-    constructor(private prodService: ProductsService, private route: ActivatedRoute, private cartService: CartService) {}
+    constructor(
+        private prodService: ProductsService,
+        private route: ActivatedRoute,
+        private messageService: MessageService,
+        private cartService: CartService
+    ) {}
 
     ngOnInit(): void {
         this.route.params.subscribe((params) => {
@@ -39,6 +45,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
             quantity: this.quantity
         };
         this.cartService.setCartItem(cartItem);
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product is added' });
     }
 
     onBuyNow() {}

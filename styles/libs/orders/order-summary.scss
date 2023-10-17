@@ -6,6 +6,7 @@
   .summary-price {
     display: flex;
     margin: 15px 0;
+    font-size: 0.9em;
     span {
       display: block;
       width: 80%;
@@ -19,7 +20,7 @@
     }
   }
   .checkout-button {
-    .button {
+    button {
       width: 100%;
     }
   }
