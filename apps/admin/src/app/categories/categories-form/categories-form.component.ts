@@ -35,7 +35,9 @@ export class CategoriesFormComponent implements OnInit, OnDestroy {
 
         this._checkEditMode();
     }
-    onCancel() {}
+    onCancel() {
+        return;
+    }
     onSubmit() {
         this.isSubmitted = true;
 
