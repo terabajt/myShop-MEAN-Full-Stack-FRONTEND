@@ -44,7 +44,7 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
             countInStock: ['', Validators.required],
             description: ['', Validators.required],
             richDescription: [''],
-            image: [''],
+            image: ['', Validators.required],
             isFeatured: [false]
         });
     }
@@ -95,10 +95,13 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
     onImageUpload(event: Event) {
         if (!(event.target instanceof HTMLInputElement)) return;
         const files = event.target.files;
+
         if (!files?.length) {
             return;
         }
         if (files[0]) {
+            this.form.patchValue({ image: files[0] });
+            this.form.get('image').updateValueAndValidity();
             const fileReader = new FileReader();
             fileReader.onload = () => {
                 this.imageDisplay = fileReader.result;
@@ -107,22 +110,20 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
         }
     }
     private _addProduct(productData: FormData) {
-        this.productsService
-            .createProduct(productData)
-            .pipe(takeUntil(this.endsubs$))
-            .subscribe(
-                (product: Product) => {
-                    this.messageService.add({ severity: 'success', summary: 'Success', detail: `Product ${product.name} is created` });
-                    timer(2000)
-                        .toPromise()
-                        .then(() => {
-                            this.location.back();
-                        });
-                },
-                () => {
-                    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Product is not created' });
-                }
-            );
+        this.productsService.createProduct(productData).subscribe(
+            (product: Product) => {
+                this.messageService.add({ severity: 'success', summary: 'Success', detail: `Product ${product.name} is created` });
+                timer(2000)
+                    .toPromise()
+                    .then(() => {
+                        this.location.back();
+                    });
+            },
+            (err) => {
+                console.log('error z addproduct', err);
+                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Product is not created' });
+            }
+        );
     }
     private _checkEditMode() {
         this.route.params.pipe(takeUntil(this.endsubs$)).subscribe((params) => {
