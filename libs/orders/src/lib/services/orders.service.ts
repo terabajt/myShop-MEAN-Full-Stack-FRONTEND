@@ -10,22 +10,23 @@ import { Product } from '@webappshop/products';
 })
 export class OrdersService {
     apiURLOrders = environment.apiURL + 'orders';
+    apiURLProducts = environment.apiURL + 'products';
     constructor(private http: HttpClient) {}
 
     getOrders(): Observable<Order[]> {
-        return this.http.get<Order[]>('http://localhost:3000/api/v1/orders');
+        return this.http.get<Order[]>(`${this.apiURLOrders}`);
     }
     getOrder(orderId: string): Observable<Order> {
-        return this.http.get<Order>(`http://localhost:3000/api/v1/orders/${orderId}`);
+        return this.http.get<Order>(`${this.apiURLOrders}/${orderId}`);
     }
     createOrder(order: Order): Observable<Order> {
-        return this.http.post<Order>('http://localhost:3000/api/v1/orders', order);
+        return this.http.post<Order>(`${this.apiURLOrders}`, order);
     }
     deleteOrder(orderId: string) {
-        return this.http.delete(`http://localhost:3000/api/v1/orders/${orderId}`);
+        return this.http.delete(`${this.apiURLOrders}/${orderId}`);
     }
     updateOrder(orderStatus: { status: string }, orderId: string) {
-        return this.http.put<Order>(`http://localhost:3000/api/v1/orders/${orderId}`, orderStatus);
+        return this.http.put<Order>(`${this.apiURLOrders}/${orderId}`, orderStatus);
     }
     getOrderCount(): Observable<number> {
         return this.http.get<number>(`${this.apiURLOrders}/get/count`).pipe(map((res: any) => res.orderCount));
@@ -34,6 +35,6 @@ export class OrdersService {
         return this.http.get<number>(`${this.apiURLOrders}/get/totalsales`).pipe(map((res: any) => res.totalsales));
     }
     getProduct(productId: string): Observable<Product> {
-        return this.http.get<any>(`http://localhost:3000/api/v1/products/${productId}`);
+        return this.http.get<any>(`${this.apiURLProducts}/${productId}`);
     }
 }

@@ -5,13 +5,13 @@ import { User } from '../models/user';
 import { HttpClient } from '@angular/common/http';
 import { LocalstorageService } from './localstorage.service';
 import { Router } from '@angular/router';
-
+import { environment } from '../../../../../environments/environment';
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    // apiURLUsers = enviroment.apiUrl + 'users';
-    apiURLUsers = 'http://localhost:3000/api/v1/users';
+    apiURLUsers = environment.apiURL + 'users';
+
     constructor(private http: HttpClient, private token: LocalstorageService, private router: Router) {}
 
     login(email: string, password: string): Observable<User> {

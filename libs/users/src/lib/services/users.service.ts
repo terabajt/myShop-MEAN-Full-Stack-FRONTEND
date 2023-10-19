@@ -33,19 +33,19 @@ export class UsersService {
     }
 
     getUsers(): Observable<User[]> {
-        return this.http.get<User[]>('http://localhost:3000/api/v1/users');
+        return this.http.get<User[]>(`${this.apiURLUsers}`);
     }
     getUser(userId: string): Observable<User> {
-        return this.http.get<User>(`http://localhost:3000/api/v1/users/${userId}`);
+        return this.http.get<User>(`${this.apiURLUsers}/${userId}`);
     }
     createUser(user: User): Observable<User> {
-        return this.http.post<User>('http://localhost:3000/api/v1/users', user);
+        return this.http.post<User>(`${this.apiURLUsers}`, user);
     }
     deleteUser(userId: string) {
-        return this.http.delete(`http://localhost:3000/api/v1/users/${userId}`);
+        return this.http.delete(`${this.apiURLUsers}/${userId}`);
     }
     updateUser(user: User) {
-        return this.http.put<User>(`http://localhost:3000/api/v1/users/${user.id}`, user);
+        return this.http.put<User>(`${this.apiURLUsers}/${user.id}`, user);
     }
 
     getUsersCount(): Observable<number> {
