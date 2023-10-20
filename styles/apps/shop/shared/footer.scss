@@ -1,0 +1,16 @@
+.footer {
+  height: 100px;
+  width:  100%;
+  background-color: $primary-color;
+  border-radius: 15px;
+  &-text{
+    padding: 30px;
+    display: inline-block;
+    color: white;
+  }
+  a{
+    color: white;
+    font-weight: 600;
+    font-size: 1.3em;
+  }
+}
